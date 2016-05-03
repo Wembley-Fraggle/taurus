@@ -1,0 +1,8 @@
+<resources>
+    <string name="app_name">Taurus</string>
+    <string name="connect">Connect</string>
+    <string name="press_connect" >Hi, press button to connect to the labyrinth with the default settings shown below, otherwise edit the fields</string>
+    <string name="ip_address">IP Address</string>
+    <string name="ip_port">IP Port</string>
+    <string name="invalid_ip_format">Invalid IP Format</string>
+</resources>
