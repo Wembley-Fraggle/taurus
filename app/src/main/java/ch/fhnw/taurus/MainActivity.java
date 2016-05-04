@@ -1,25 +1,18 @@
 package ch.fhnw.taurus;
 
-import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.SurfaceView;
 
-import java.net.HttpURLConnection;
-import java.text.MessageFormat;
-import java.util.concurrent.TimeUnit;
-
 public class MainActivity extends AppCompatActivity {
 
     private static final String LOG_TAG = MainActivity.class.getName();
-    private static final String TAG_IP_ADDRESS = "ip_address";
-    private static final String TAG_IP_PORT    = "ip_port";
-    private static final String RESULT_CODE = "RESULT_CODE";
-    private static final String RESULT_MESSAGE = "RESULT_MESSAGE";
-    private static final int CONNECT_REQUEST_CODE = 1;
     private SurfaceView surfaceView;
+    private AsyncTask connectionTask;
+    private boolean connectionTested;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -27,43 +20,66 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         surfaceView = (SurfaceView)this.findViewById(R.id.labyrinth);
-        new ServerConnectionTask().execute(getIntent());
-    }
+        surfaceView.getHolder();
 
-    private class ServerConnectionTask extends AsyncTask<Intent,Void,Intent> {
+        // Get a support ActionBar corresponding to this toolbar
+        ActionBar ab = getSupportActionBar();
 
-        @Override
-        protected Intent doInBackground(Intent... params) {
-            Log.v(LOG_TAG,"doInBackground() called");
-            while(! isCancelled() ) {
-                try {
-                    Thread.sleep(TimeUnit.MILLISECONDS.convert(3, TimeUnit.SECONDS));
-                    Intent intent = new Intent();
-                    intent.putExtra(RESULT_CODE,HttpURLConnection.HTTP_BAD_REQUEST);
-                    intent.putExtra(RESULT_MESSAGE,"Bad Request");
-                    return intent;
-                }
-                catch(InterruptedException ex ) {
-                    // Ignore and retry. We can not interrupt
-                    Log.d(LOG_TAG,"Service not interruptible");
-                }
-            }
-            Intent intent = new Intent();
-            intent.putExtra(RESULT_CODE,HttpURLConnection.HTTP_RESET);
-            intent.putExtra(RESULT_MESSAGE,"User canceled");
-            return intent;
+        // Enable the Up button
+        ab.setDisplayHomeAsUpEnabled(true);
+        // TODO On Back button clicked
+
+        connectionTested = false;
+        if(savedInstanceState != null && savedInstanceState.containsKey(Contract.TAG_CONNECTION_TEST_STARTED)) {
+            connectionTested = savedInstanceState.getBoolean(Contract.TAG_CONNECTION_TEST_STARTED);
         }
-
-        @Override
-        protected void onPostExecute(Intent intent) {
-            Log.v(LOG_TAG,"onPostExecute() called");
-            super.onPostExecute(intent);
-            int statusCode = intent.getIntExtra(RESULT_CODE,HttpURLConnection.HTTP_INTERNAL_ERROR);
-            String msg = intent.getStringExtra(RESULT_MESSAGE);
-            Log.d(LOG_TAG, MessageFormat.format("{0}:{1}",statusCode,msg));
-            if(statusCode >= HttpURLConnection.HTTP_BAD_REQUEST) {
-                setResult(CONNECT_REQUEST_CODE,intent);
-            }
+        if(!connectionTested) {
+            connectionTask = new ServerConnectionTask(this).execute(getIntent());
+            connectionTested = true;
         }
     }
+
+    @Override
+    public void onBackPressed() {
+        Log.v(LOG_TAG,"onBackPressed() called");
+        if(connectionTask != null) {
+            connectionTask.cancel(true);
+            connectionTask = null;
+        }
+        connectionTested = false;
+        super.onBackPressed();
+    }
+
+    @Override
+    protected void onRestoreInstanceState(Bundle savedInstanceState) {
+        Log.v(LOG_TAG,"onRestoreInstanceState() called");
+        connectionTested = false;
+        if(savedInstanceState.containsKey(Contract.TAG_CONNECTION_TEST_STARTED)) {
+            connectionTested = savedInstanceState.getBoolean(Contract.TAG_CONNECTION_TEST_STARTED);
+
+        }
+        if(!connectionTested) {
+            connectionTask = new ServerConnectionTask(this).execute(getIntent());
+            connectionTested = true;
+        }
+        super.onRestoreInstanceState(savedInstanceState);
+    }
+
+    @Override
+    protected void onSaveInstanceState(Bundle savedInstanceState) {
+        Log.v(LOG_TAG,"onSaveInstanceState() called");
+        savedInstanceState.putBoolean(Contract.TAG_CONNECTION_TEST_STARTED,connectionTested);
+        super.onSaveInstanceState(savedInstanceState);
+    }
+
+    @Override
+    protected void onDestroy() {
+        Log.v(LOG_TAG,"onDestroy() called");
+        if(connectionTask != null) {
+            connectionTask.cancel(true);
+        }
+        connectionTask = null;
+        super.onDestroy();
+    }
+
 }
