@@ -1,59 +1,57 @@
 package ch.fhnw.taurus;
 
-import android.content.Context;
-import android.content.Intent;
 import android.os.AsyncTask;
 import android.util.Log;
-import android.widget.Toast;
 
-import java.net.HttpURLConnection;
-import java.text.MessageFormat;
-import java.util.concurrent.TimeUnit;
+import java.io.IOException;
+import java.net.InetAddress;
+import java.net.UnknownHostException;
 
 /**
  * Created by nozdormu on 03/05/2016.
  */
-public class ServerConnectionTask extends AsyncTask<Intent,Void,Intent> {
+public class ServerConnectionTask extends AsyncTask<ConnectionModel,Void,Boolean> {
     private static final String LOG_TAG = ServerConnectionTask.class.getName();
-    private Context context;
+    private ConnectionResultCallback callback;
 
-    public ServerConnectionTask(Context context) {
-        this.context = context;
+
+    public ServerConnectionTask(ConnectionResultCallback callback) {
+        this.callback = callback;
     }
 
     @Override
-    protected Intent doInBackground(Intent... params) {
+    protected Boolean doInBackground(ConnectionModel... params) {
         Log.v(LOG_TAG,"doInBackground() called");
-        while(! isCancelled() ) {
-            try {
-                Thread.sleep(TimeUnit.MILLISECONDS.convert(3, TimeUnit.SECONDS));
-                Intent intent = new Intent();
-                intent.putExtra(Contract.TAG_HTTP_STATUS, HttpURLConnection.HTTP_BAD_REQUEST);
-                intent.putExtra(Contract.RESULT_MESSAGE,"Bad Request");
-                return intent;
-            }
-            catch(InterruptedException ex ) {
-                // Ignore and retry. We can not interrupt
-                Log.d(LOG_TAG,"Service not interruptible");
-            }
+        if(params == null || params.length < 1) {
+            throw new IllegalArgumentException("Missing connection model");
         }
-        Intent intent = new Intent();
-        intent.putExtra(Contract.TAG_HTTP_STATUS,HttpURLConnection.HTTP_RESET);
-        intent.putExtra(Contract.RESULT_MESSAGE,"User canceled");
-        return intent;
+        ConnectionModel connectionModel = params[0];
+
+        Boolean connecable = Boolean.FALSE;
+
+        String ip = connectionModel.getIp();
+        try {
+            InetAddress serverAddr = InetAddress.getByName(ip);
+            return true;
+        }
+        catch (UnknownHostException ex) {
+            connecable = false;
+        }
+        catch(IOException ex) {
+            connecable = false;
+        }
+
+        return connecable;
     }
 
 
     @Override
-    protected void onPostExecute(Intent intent) {
+    protected void onPostExecute(Boolean connecable) {
         Log.v(LOG_TAG,"onPostExecute() called");
 
-        int statusCode = intent.getIntExtra(Contract.TAG_HTTP_STATUS,HttpURLConnection.HTTP_INTERNAL_ERROR);
-        String msg = intent.getStringExtra(Contract.RESULT_MESSAGE);
-        Log.d(LOG_TAG, MessageFormat.format("{0}:{1}",statusCode,msg));
-        if(statusCode >= HttpURLConnection.HTTP_BAD_REQUEST) {
-            Toast.makeText(context,msg,Toast.LENGTH_LONG).show();
+        if(callback != null) {
+            callback.onConnectionResult(connecable.booleanValue());
         }
-        super.onPostExecute(intent);
+        super.onPostExecute(connecable);
     }
 }

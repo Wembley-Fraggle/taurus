@@ -4,9 +4,9 @@
     <string name="press_connect" >Hi, press button to connect to the labyrinth with the default settings shown below, otherwise edit the fields</string>
     <string name="ip_address">IP Address</string>
     <string name="ip_port">IP Port</string>
-    <string name="invalid_ip_format">Invalid IP Format</string>
-    <string name="invvalid_port_format">Invalid Port Format</string>
+    <string name="invalid_format">Invalid Format</string>
+    <string name="invalid_range">Value must be in range between {0} and {1}</string>
     <string name="field_required">Field Required</string>
-    <string name="positive_int_requried">Positive integer value required</string>
     <string name="please_fix_input">Please fix your entered input first</string>
+
 </resources>
