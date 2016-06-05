@@ -10,9 +10,10 @@
     android:paddingTop="0dp"
     tools:context="ch.fhnw.taurus.MainActivity">
 
-    <ch.fhnw.taurus.LabyrinthView
-        android:id="@+id/labyrinth"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"/>
+    <fragment
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent"
+        tools:layout="@layout/fragment_main"
+        />
 
 </RelativeLayout>
