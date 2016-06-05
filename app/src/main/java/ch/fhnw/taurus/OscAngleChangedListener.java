@@ -29,8 +29,8 @@ public class OscAngleChangedListener implements Observer {
             Message msg = handler.obtainMessage();
             msg.what = OscThread.WHAT_SEND_POS;
             Bundle bundle = msg.getData();
-            bundle.putInt("x",labyrinth.getXAngle());
-            bundle.putInt("y",labyrinth.getYAngle());
+            bundle.putInt("x",labyrinth.getPitch());
+            bundle.putInt("y",labyrinth.getRoll());
 
             msg.sendToTarget();
         }

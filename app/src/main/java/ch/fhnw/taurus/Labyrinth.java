@@ -9,37 +9,27 @@ import java.util.Observable;
 public final class Labyrinth extends Observable {
     private static final String LOG_TAG = Labyrinth.class.getName();
     private Object lock = new Object();
-    private int maxXDegree;
-    private int maxYDegree;
-    private int xAngle;
-    private int yAngle;
+    private int maxPitch;
+    private int maxRoll;
+    private int pitch;
+    private int roll;
 
-    public Labyrinth(int maxXDegree, int maxYDegree) {
-        this.maxXDegree = maxXDegree;
-        this.maxYDegree = maxYDegree;
-        xAngle = maxXDegree / 2;
-        yAngle = maxYDegree / 2;
+    public Labyrinth(int maxPitch, int maxRoll) {
+        this.maxPitch = maxPitch;
+        this.maxRoll = maxRoll;
+        pitch = maxRoll / 2;
+        roll = maxRoll / 2;
     }
 
-    public  void setAngles(int x, int y) {
+    public  void setAngles(int pitch, int roll) {
         synchronized (lock) {
-            if (x < 0) {
-                throw new IllegalArgumentException("x-Angle must be positive");
-            }
-            if (y < 0) {
-                throw new IllegalArgumentException("y-Angle must be positive");
-            }
+            validatePitch(pitch);
+            validateRoll(roll);
 
-            if (x > maxXDegree) {
-                throw new IllegalStateException(MessageFormat.format("Max allowed x-angle: {0}", maxXDegree));
-            }
+            boolean positionChanged = this.pitch != pitch || this.roll != roll;
 
-            if (y > maxYDegree) {
-                throw new IllegalStateException(MessageFormat.format("Max allowed y-angle: {0}", maxYDegree));
-            }
-            boolean positionChanged = this.xAngle != x || this.yAngle != y;
-            this.xAngle = x;
-            this.yAngle = y;
+            this.pitch= pitch;
+            this.roll = roll;
             if (positionChanged) {
                 setChanged();
                 notifyObservers();
@@ -47,27 +37,69 @@ public final class Labyrinth extends Observable {
         }
     }
 
-    public int getXAngle() {
+    public void setPitch(int pitch) {
         synchronized (lock) {
-            return xAngle;
+            validatePitch(pitch);
+            if(this.pitch != pitch) {
+                this.pitch = pitch;
+                setChanged();
+                notifyObservers();
+            }
         }
     }
 
-    public int getYAngle() {
+    public void setRoll(int roll) {
         synchronized (lock) {
-            return yAngle;
+            validateRoll(roll);
+            if(this.roll != roll) {
+                this.roll = roll;
+                setChanged();
+                notifyObservers();
+            }
         }
     }
 
-    public int getMaxXDegree() {
+    public int getPitch() {
         synchronized (lock) {
-            return maxXDegree;
+            return roll;
         }
     }
 
-    public int getMaxYDegree() {
+    public int getRoll() {
         synchronized (lock) {
-            return maxYDegree;
+            return pitch;
         }
     }
+
+    public int getMaxPitch() {
+        synchronized (lock) {
+            return maxPitch;
+        }
+    }
+
+    public int getMaxRoll() {
+        synchronized (lock) {
+            return maxRoll;
+        }
+    }
+
+    private void validatePitch(int pitch) {
+        if (pitch < 0) {
+            throw new IllegalArgumentException("pitch angle must be positive");
+        }
+        if(pitch > maxPitch) {
+            throw new IllegalStateException(MessageFormat.format("Max allowed pitch-angle: {0}", maxPitch));
+        }
+    }
+
+    private void validateRoll(int roll) {
+        if (roll < 0) {
+            throw new IllegalArgumentException("roll angle must be positive");
+        }
+        if(roll > maxRoll) {
+            throw new IllegalStateException(MessageFormat.format("Max allowed roll-angle: {0}", maxRoll));
+        }
+    }
+
+
 }

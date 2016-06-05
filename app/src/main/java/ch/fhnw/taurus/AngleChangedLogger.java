@@ -16,7 +16,7 @@ public class AngleChangedLogger implements Observer{
     public void update(Observable observable, Object data) {
         if(observable instanceof  Labyrinth) {
             Labyrinth labyrinth = (Labyrinth)observable;
-            Log.d(LOG_TAG, MessageFormat.format("Angle Changed: {0}/{1}",labyrinth .getXAngle(),labyrinth.getYAngle()));
+            Log.d(LOG_TAG, MessageFormat.format("Angle Changed: {0}/{1}",labyrinth .getPitch(),labyrinth.getRoll()));
         }
     }
 }

@@ -17,11 +17,11 @@ public class PositionConverter {
     }
 
     public int convertToXAngle(float displayXPos) {
-        return convertToAngle(displayXPos,view.getWidth(),labyrinth.getMaxXDegree());
+        return convertToAngle(displayXPos,view.getWidth(),labyrinth.getMaxPitch());
     }
 
     private int convertToYAngle(float displayXPos) {
-        return convertToAngle(displayXPos,view.getHeight(),labyrinth.getMaxYDegree());
+        return convertToAngle(displayXPos,view.getHeight(),labyrinth.getMaxRoll());
     }
 
     private int convertToAngle(float displayPos, float displayLen,int maxAngle) {
