@@ -25,8 +25,8 @@ public class VerticalTouchDrawStrategy implements  DrawStrategy{
         paint.setColor(Color.GRAY);
         paint.setStrokeWidth(5);
 
-        float horizontalMid = (float)width/2.0f;
-        float verticalMid = (float)height/2.0f;
+        float horizontalMid = width/2.0f;
+        float verticalMid = height/2.0f;
         canvas.drawLine(horizontalMid,0,horizontalMid,height,paint);
         canvas.drawCircle( horizontalMid,verticalMid,OUTER_CURSOR_RADIUS+5,paint);
 
@@ -40,7 +40,7 @@ public class VerticalTouchDrawStrategy implements  DrawStrategy{
         paint.setColor(Color.YELLOW);
 
         float width = canvas.getWidth();
-        float horizontalMid = (float)width/2.0f;
+        float horizontalMid = width/2.0f;
 
         canvas.drawCircle(horizontalMid,y,INNER_CURSOR_RADIUS,paint);
 
