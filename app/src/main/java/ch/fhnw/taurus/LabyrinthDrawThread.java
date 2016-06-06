@@ -2,7 +2,6 @@ package ch.fhnw.taurus;
 
 import android.graphics.Canvas;
 import android.graphics.Color;
-import android.graphics.Paint;
 import android.graphics.PorterDuff;
 import android.os.Bundle;
 import android.os.Handler;
@@ -20,14 +19,16 @@ public class LabyrinthDrawThread extends HandlerThread{
     private boolean isCancelded;
     private final float innerRadius;
     private final float outerRadius;
+    private final DrawStrategy drawStrategy;
     private Handler handler;
 
     public static final int WHAT_STOP = 0;
     public static final int WHAT_SET_POS = 1;
 
+
     // FIXME Wait until initialized, use the callback
 
-    public LabyrinthDrawThread(SurfaceView view, float innerRadius, float outerRadius) {
+    public LabyrinthDrawThread(SurfaceView view, float innerRadius, float outerRadius, DrawStrategy drawStrategy) {
         super(LabyrinthDrawThread.class.getSimpleName(), Process.THREAD_PRIORITY_BACKGROUND);
         if(view == null) {
             throw new IllegalArgumentException("View must not be null");
@@ -35,6 +36,7 @@ public class LabyrinthDrawThread extends HandlerThread{
         this.view = view;
         this.innerRadius= innerRadius;
         this.outerRadius=  Math.max(innerRadius,outerRadius);
+        this.drawStrategy = drawStrategy;
     }
 
     @Override
@@ -70,20 +72,22 @@ public class LabyrinthDrawThread extends HandlerThread{
         float posX =  bundle.getFloat("x");
         float posY = bundle.getFloat("y");
 
-        drawCursor(posX,posY);
+        draw(posX,posY);
 
 
     }
 
-    private void drawCursor(float x, float y) {
+    private void draw(float x, float y) {
 
         final SurfaceHolder surfaceHolder = view.getHolder();
         Canvas canvas = null;
         try {
             canvas = surfaceHolder.lockCanvas();
             synchronized (surfaceHolder) {
-                if(canvas != null) {
-                    drawCursor(x,y,canvas);
+                if(canvas != null && drawStrategy != null) {
+                    canvas.drawColor(Color.TRANSPARENT, PorterDuff.Mode.CLEAR);
+                    drawStrategy.drawBackground(canvas);
+                    drawStrategy.drawCursor(canvas,x,y);
                 }
             }
         } finally {
@@ -92,23 +96,5 @@ public class LabyrinthDrawThread extends HandlerThread{
             }
         }
     }
-
-    private void drawCursor(float posX, float posY,Canvas canvas) {
-
-        canvas.drawColor(Color.TRANSPARENT, PorterDuff.Mode.CLEAR);
-        Paint paint = new Paint();
-        paint.setStyle(Paint.Style.FILL);
-        paint.setColor(Color.YELLOW);
-
-        canvas.drawCircle(posX,posY,innerRadius,paint);
-
-        if(innerRadius != outerRadius) {
-            paint.setStyle(Paint.Style.STROKE);
-            paint.setStrokeWidth(5);
-            canvas.drawCircle(posX,posY,outerRadius,paint);
-        }
-    }
-
-
 }
 

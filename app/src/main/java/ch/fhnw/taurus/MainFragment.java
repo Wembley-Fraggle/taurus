@@ -7,7 +7,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
-
+// FIXME No more needed
 public class MainFragment extends Fragment {
     @Nullable
     @Override

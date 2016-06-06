@@ -44,8 +44,12 @@ public class TouchFragment extends Fragment {
                 getLabyrinth().setRoll(roll);
             }
         });
+
+        pitchView.setDrawStrategy(new HorizontalTouchDrawStrategy());
+        rollView.setDrawStrategy(new VerticalTouchDrawStrategy());
         return view;
     }
+
 
     private Labyrinth getLabyrinth() {
         return getApp().getLabyrinth();

@@ -23,13 +23,13 @@ public class LabyrinthView extends SurfaceView implements SurfaceHolder.Callback
     private static final float RADIUS=30;
     public static final float OUTER_RADIUS = RADIUS + 10;
     private List<TouchEventListener> touchEventListenerList;
-
-
+    private DrawStrategy drawStrategy;
 
     public LabyrinthView(Context context) {
         super(context);
         init();
     }
+
     public LabyrinthView(Context context, AttributeSet attrs) {
         super(context, attrs);
         init();
@@ -46,6 +46,14 @@ public class LabyrinthView extends SurfaceView implements SurfaceHolder.Callback
 
     public void removeTouchEventListener(TouchEventListener listener) {
         touchEventListenerList.remove(listener);
+    }
+
+    public DrawStrategy getDrawStrategy() {
+        return drawStrategy;
+    }
+
+    public void setDrawStrategy(DrawStrategy drawStrategy) {
+        this.drawStrategy = drawStrategy;
     }
 
     private void init() {
@@ -74,8 +82,10 @@ public class LabyrinthView extends SurfaceView implements SurfaceHolder.Callback
             drawTask = null;
         }
 
-        drawTask = new LabyrinthDrawThread(this,RADIUS, OUTER_RADIUS);
+        drawTask = new LabyrinthDrawThread(this,RADIUS, OUTER_RADIUS, drawStrategy);
         drawTask.start();
+
+
     }
 
     @Override
