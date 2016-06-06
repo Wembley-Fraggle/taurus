@@ -16,11 +16,12 @@ public class PositionConverter {
         this.cursorRadius = cursorRadius;
     }
 
+    // FIXME Pitch and Roll
     public int convertToXAngle(float displayXPos) {
         return convertToAngle(displayXPos,view.getWidth(),labyrinth.getMaxPitch());
     }
 
-    private int convertToYAngle(float displayXPos) {
+    public int convertToYAngle(float displayXPos) {
         return convertToAngle(displayXPos,view.getHeight(),labyrinth.getMaxRoll());
     }
 
