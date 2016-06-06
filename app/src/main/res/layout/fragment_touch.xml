@@ -1,0 +1,28 @@
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+             xmlns:tools="http://schemas.android.com/tools"
+             android:layout_width="match_parent"
+             android:layout_height="match_parent"
+             tools:context="ch.fhnw.taurus.TouchFragment">
+
+    <TextView
+        android:id="@+id/touch_control_anchor"
+        android:layout_width="wrap_content"
+        android:layout_height="match_parent"
+        android:layout_centerHorizontal="true"
+        />
+
+    <ch.fhnw.taurus.LabyrinthView
+        android:id="@+id/pitch_control"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_toLeftOf="@id/touch_control_anchor"
+        />
+
+    <ch.fhnw.taurus.LabyrinthView
+        android:id="@+id/roll_control"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_toRightOf="@id/touch_control_anchor"
+        />
+
+</RelativeLayout>

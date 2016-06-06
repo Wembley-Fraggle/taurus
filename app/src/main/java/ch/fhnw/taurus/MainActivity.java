@@ -1,16 +1,14 @@
 package ch.fhnw.taurus;
 
+import android.app.Activity;
 import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
-import android.support.v7.app.ActionBar;
-import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
-import android.view.MotionEvent;
 
-public class MainActivity extends AppCompatActivity {
+public class MainActivity extends Activity {
 
     private static final String LOG_TAG = MainActivity.class.getName();
     private LabyrinthView surfaceView;
@@ -26,24 +24,9 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
 
         setContentView(R.layout.activity_main);
-        surfaceView = (LabyrinthView)this.findViewById(R.id.labyrinth);
-        surfaceView.getHolder();
-
-        final PositionConverter converter = new PositionConverter(getLabyrinth(),surfaceView,surfaceView.getMaxCursorRadius());
-        surfaceView.addTouchEventListener(new TouchEventListener() {
-            @Override
-            public void onTouchEvent(MotionEvent event) {
-                int xDegree = converter.convertToXAngle(event.getX());
-                int yDegree = converter.convertToXAngle(event.getY());
-                getLabyrinth().setAngles(xDegree,yDegree);
-            }
-        });
-
-        // Get a support ActionBar corresponding to this toolbar
-        ActionBar ab = getSupportActionBar();
 
         // Enable the Up button
-        ab.setDisplayHomeAsUpEnabled(true);
+        // getActionBar().setDisplayHomeAsUpEnabled(true);
         // TODO On Back button
 
         Intent callerIntent = getIntent();

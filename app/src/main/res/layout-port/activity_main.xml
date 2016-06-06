@@ -10,10 +10,4 @@
     android:paddingTop="0dp"
     tools:context="ch.fhnw.taurus.MainActivity">
 
-    <fragment
-        android:layout_width="fill_parent"
-        android:layout_height="fill_parent"
-        tools:layout="@layout/fragment_main"
-        />
-
 </RelativeLayout>
