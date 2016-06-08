@@ -1,5 +1,9 @@
 package ch.fhnw.taurus;
 
+import android.util.Log;
+
+import java.text.MessageFormat;
+
 import netP5.NetAddress;
 import oscP5.OscMessage;
 import oscP5.OscP5;
@@ -10,6 +14,7 @@ import oscP5.OscProperties;
  */
 public class OscClient {
 
+    private static final String LOG_TAG = OscClient.class.getName();
     private OscP5 oscP5;
     private ConnectionModel model;
     private NetAddress remote;
@@ -42,6 +47,7 @@ public class OscClient {
         oscMessage.add(1);
         oscMessage.add(angleY);
 
+        Log.d(LOG_TAG, MessageFormat.format("Updating osc angles [{0}/{1}",angleX,angleY));
         oscP5.send(oscMessage);
     }
 }

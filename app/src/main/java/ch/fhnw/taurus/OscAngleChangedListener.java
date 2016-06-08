@@ -11,10 +11,11 @@ import java.util.Observer;
  * Created by nozdormu on 08/05/2016.
  */
 public class OscAngleChangedListener implements Observer {
-    private OscThread oscThread;
+    private static final String LOG_TAG = OscAngleChangedListener.class.getName();
+    private Handler  oscHandler;
 
-    public OscAngleChangedListener(OscThread oscThread) {
-        this.oscThread= oscThread;
+    public OscAngleChangedListener(Handler oscHandler) {
+        this.oscHandler = oscHandler;
     }
 
     @Override
@@ -23,10 +24,9 @@ public class OscAngleChangedListener implements Observer {
             // Not the business of this class
             return;
         }
-        Handler handler = oscThread.getHandler();
-        if(handler != null) {
+        if(oscHandler!= null) {
             Labyrinth labyrinth = (Labyrinth)observable;
-            Message msg = handler.obtainMessage();
+            Message msg = oscHandler.obtainMessage();
             msg.what = OscThread.WHAT_SEND_POS;
             Bundle bundle = msg.getData();
             bundle.putInt("x",labyrinth.getPitch());

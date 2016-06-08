@@ -2,21 +2,22 @@ package ch.fhnw.taurus;
 
 import android.app.Activity;
 import android.content.Intent;
-import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
 import android.util.Log;
 
+import java.util.concurrent.TimeUnit;
+
 public class MainActivity extends Activity {
 
     private static final String LOG_TAG = MainActivity.class.getName();
     private TouchLabyrinthView surfaceView;
-    private AsyncTask connectionTask;
+    private ServerConnectionTask connectionTask;
     private boolean connectionTested;  // FIXME Requried?
     private ConnectionModel connectionModel;
     private OscAngleChangedListener angleChangedListener;
-    private OscThread oscThread;
+    private Handler oscHandler;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -71,32 +72,27 @@ public class MainActivity extends Activity {
     private void startConnectionTask(Bundle savedInstanceState) {
         final ConnectionModel connectionModel = (ConnectionModel) getIntent().getSerializableExtra(Contract.TAG_CONNECTION_MODEL);
 
-        connectionTask = new ServerConnectionTask(new ConnectionResultCallback() {
-            @Override
-            public void onConnectionResult(boolean connectable) {
-                if(connectable) {
-                    Log.w(LOG_TAG,"Connection possible");
-                    OscClient client = new OscClient(connectionModel);
-                    oscThread = new OscThread(connectionModel);
-                    oscThread.addThreadInitCallback(new ThreadInitCallback() {
-                        @Override
-                        public void onHandlerInitialized(Handler handler) {
-                            connectOsc(handler);
-                        }
-                    });
-                    oscThread.start();
-                    angleChangedListener= new OscAngleChangedListener(oscThread);
+        connectionTask = new ServerConnectionTask();
+        connectionTask.execute(connectionModel);
+        try {
+            OscClient oscClient  = connectionTask.get(10, TimeUnit.SECONDS);
+            Log.w(LOG_TAG, "Connection possible");
+            new OscThread(oscClient, new ThreadInitCallback() {
+                @Override
+                public void onHandlerInitialized(Handler handler) {
+                    oscHandler = handler;
+                    angleChangedListener = new OscAngleChangedListener(handler);
                     getLabyrinth().addObserver(angleChangedListener);
                 }
-                else {
-                    Log.w(LOG_TAG,"Failed to connect");
-                    setResult(Contract.RESULT_CONNECTION_FAILED);
-                    finish();
+            }).start();
+            connectionTested = true;
+        }
+        catch(Exception ex) {
+            Log.w(LOG_TAG, "Failed to connect");
+            setResult(Contract.RESULT_CONNECTION_FAILED);
+            finish();
+        }
 
-                }
-            }
-        }).execute(connectionModel);
-        connectionTested = true;
     }
 
     @Override
@@ -120,24 +116,17 @@ public class MainActivity extends Activity {
             getLabyrinth().deleteObserver(angleChangedListener);
             angleChangedListener = null;
         }
-        if(oscThread != null) {
+        if(oscHandler != null) {
             stopOscThread();;
-            oscThread = null;
+            oscHandler = null;
         }
         connectionTask = null;
         super.onDestroy();
     }
 
-    private void connectOsc(Handler handler) {
-        Message msg = handler.obtainMessage();
-        msg.what = OscThread.WHAT_CONNECT;
-        msg.sendToTarget();
-    }
-
     private void stopOscThread() {
-        if(oscThread != null) {
-            Handler handler = oscThread.getHandler();
-            Message msg = handler.obtainMessage();
+        if(oscHandler != null) {
+            Message msg = oscHandler.obtainMessage();
             msg.what = OscThread.WHAT_STOP;
             msg.sendToTarget();
         }

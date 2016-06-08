@@ -6,69 +6,38 @@ import android.os.HandlerThread;
 import android.os.Message;
 import android.os.Process;
 
-import java.util.LinkedList;
-import java.util.List;
-
 /**
  * Created by nozdormu on 12/05/2016.
  */
 public class OscThread extends HandlerThread {
 
-    public static final int WHAT_CONNECT = 0;
     public static final int WHAT_SEND_POS = 1;
-    public static final int WHAT_DISCONNECT = 2;
-    public static final int WHAT_STOP = 3;
+    public static final int WHAT_STOP = 2;
 
     private OscClient oscClient;
     private Handler handler;
-    private ConnectionModel connectionModel;
-    private List<ThreadInitCallback> callbackList;
+    private ThreadInitCallback threadInitCallback;
 
-    public OscThread(ConnectionModel connectionModel) {
+    public OscThread(OscClient oscClient, ThreadInitCallback callback) {
         super(OscThread.class.getSimpleName(), Process.THREAD_PRIORITY_BACKGROUND);
-        this.connectionModel = connectionModel;
-        this.callbackList = new LinkedList<>();
-    }
-
-    public void addThreadInitCallback(ThreadInitCallback callback) {
-        this.callbackList.add(callback);
-    }
-
-    public void removeThreadInitCallback(ThreadInitCallback callback) {
-        this.callbackList.remove(callback);
-    }
-
-    public Handler getHandler() {
-        return this.handler;
+        this.threadInitCallback = callback;
+        this.oscClient = oscClient;
     }
 
     @Override
     protected void onLooperPrepared() {
         handler = createDispatcher();
-        fireHandleInitialized(handler);
 
-        // Once initialized, we don't need it anymore
-        callbackList.clear();
-    }
-
-    private void fireHandleInitialized(Handler handler) {
-        List<ThreadInitCallback> localCallbackList = new LinkedList<>(callbackList);
-        for(ThreadInitCallback callback : localCallbackList) {
-            callback.onHandlerInitialized(handler);
+        if(threadInitCallback != null) {
+            threadInitCallback.onHandlerInitialized(handler);
         }
     }
 
     private Handler createDispatcher() {
-        return new Handler(getLooper()) {
+        return new Handler() {
             @Override
             public void handleMessage(Message msg) {
-                if (msg.what == WHAT_CONNECT) {
-                    doConnect(msg);
-                }
-                else if(msg.what == WHAT_DISCONNECT) {
-                    doDisconnect(msg);
-                }
-                else if(msg.what == WHAT_SEND_POS) {
+                if(msg.what == WHAT_SEND_POS) {
                     doSendPos(msg);
                 }
                 else if(msg.what == WHAT_STOP) {
@@ -78,13 +47,6 @@ public class OscThread extends HandlerThread {
         };
     }
 
-    private void doConnect(Message msg) {
-        if(oscClient != null) {
-            oscClient.disconnect();
-        }
-        oscClient = new OscClient(connectionModel);
-        oscClient.connect();
-    }
 
     private void doSendPos(Message msg) {
         if(oscClient == null) {
@@ -97,13 +59,6 @@ public class OscThread extends HandlerThread {
 
         oscClient.sendMessage(x,y);
 
-    }
-
-    private void doDisconnect(Message msg) {
-        if(oscClient != null) {
-            oscClient.disconnect();
-            oscClient = null;
-        }
     }
 
     private void doStop(Message msg) {
