@@ -4,7 +4,7 @@
              android:layout_height="match_parent"
              tools:context="ch.fhnw.taurus.AccelerometerFragment">
 
-    <ch.fhnw.taurus.TouchLabyrinthView
+    <ch.fhnw.taurus.AcceleratedLabyrinthView
         android:id="@+id/accelerometer_control"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
