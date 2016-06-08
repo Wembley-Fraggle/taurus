@@ -8,7 +8,6 @@ import android.util.AttributeSet;
 import android.util.Log;
 import android.view.MotionEvent;
 import android.view.SurfaceHolder;
-import android.view.SurfaceView;
 
 import java.text.MessageFormat;
 import java.util.LinkedList;
@@ -17,7 +16,7 @@ import java.util.List;
 /**
  * Created by nozdormu on 03/05/2016.
  */
-public class LabyrinthView extends SurfaceView implements SurfaceHolder.Callback {
+public class LabyrinthView extends AbstractLabyrinthView {
     private static final String LOG_TAG = LabyrinthView.class.getName();
     private LabyrinthDrawThread drawTask;
     private static final float RADIUS=30;
