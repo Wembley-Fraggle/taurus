@@ -30,6 +30,9 @@ public class MainActivity extends Activity {
         // getActionBar().setDisplayHomeAsUpEnabled(true);
         // TODO On Back button
 
+        // FIXME Check for one or two containers. If there are two, use the accelerometer view
+        // otherwise the
+
         Intent callerIntent = getIntent();
         if(callerIntent.hasExtra(Contract.TAG_CONNECTION_MODEL)) {
             // Get the model from the caller if existing

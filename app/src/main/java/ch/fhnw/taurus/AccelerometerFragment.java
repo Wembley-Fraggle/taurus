@@ -32,7 +32,9 @@ public class AccelerometerFragment extends Fragment {
 
         labyrinthView.addTouchEventListener(new PositionChangedListener() {
             @Override
-            public void onAngleChanged(int pitch, int roll) {
+            public void onPositionChanged(float x, float y) {
+                int pitch = angleConverter.convertToXAngle(x);
+                int roll = angleConverter.convertToYAngle(y);
                 getLabyrinth().setAngles(pitch,roll);
             }
         });

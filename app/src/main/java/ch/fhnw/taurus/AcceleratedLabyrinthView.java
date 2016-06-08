@@ -18,7 +18,7 @@ public class AcceleratedLabyrinthView extends  AbstractLabyrinthView {
 
     private static final float G = 9.81f;
     private static final String LOG_TAG = AcceleratedLabyrinthView.class.getName();
-    private static final int SAMPLING_PERIOD = 10;
+    private static final int SAMPLING_PERIOD = 20;
     private SensorEventListener sensorEventListener;
 
 
@@ -41,9 +41,10 @@ public class AcceleratedLabyrinthView extends  AbstractLabyrinthView {
         SensorManager manager = (SensorManager) getContext().getSystemService(Context.SENSOR_SERVICE);
         Sensor sensor = manager.getDefaultSensor(Sensor.TYPE_ACCELEROMETER);
         sensorEventListener = new SensorEventListener() {
+
             @Override
             public void onSensorChanged(SensorEvent event) {
-                float gX = normalizeGravity(event.values[0]);
+                float gX = normalizeGravity(-event.values[0]);
                 float gY = normalizeGravity(event.values[1]);
 
                 float x = convertGravityXToPosition(gX);
@@ -52,7 +53,7 @@ public class AcceleratedLabyrinthView extends  AbstractLabyrinthView {
                 sendPosToDrawTask(x,y);
                 firePositionChanged(x,y);
 
-                Log.v(LOG_TAG, MessageFormat.format("onSensorChanged() called [{0}/{1}]", x, y));
+                Log.v(LOG_TAG, MessageFormat.format("onSensorChanged() called [{0}/{1}]", x,y));
             }
 
             @Override
@@ -61,7 +62,7 @@ public class AcceleratedLabyrinthView extends  AbstractLabyrinthView {
             }
         };
 
-        manager.registerListener(sensorEventListener, sensor, SAMPLING_PERIOD);
+        manager.registerListener(sensorEventListener, sensor,SensorManager.SENSOR_DELAY_GAME);
 
     }
 
@@ -74,7 +75,12 @@ public class AcceleratedLabyrinthView extends  AbstractLabyrinthView {
     }
 
     private float normalizeGravity(float g) {
-        return Math.max(G, Math.min(-G, g));
+        if(g < 0) {
+            return Math.max(-G, g);
+        }
+        else {
+            return Math.min(G, g);
+        }
     }
 
     private float convertGravityXToPosition(float g) {
