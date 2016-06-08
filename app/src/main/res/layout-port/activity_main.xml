@@ -10,4 +10,10 @@
     android:paddingTop="0dp"
     tools:context="ch.fhnw.taurus.MainActivity">
 
+    <fragment android:name="ch.fhnw.taurus.AccelerometerFragment"
+              android:id="@+id/container_touch"
+              android:layout_width="match_parent"
+              android:layout_height="match_parent"
+              tools:layout="@layout/fragment_touch" />
+
 </RelativeLayout>
