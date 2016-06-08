@@ -3,7 +3,6 @@ package ch.fhnw.taurus;
 import android.content.Context;
 import android.util.AttributeSet;
 import android.util.Log;
-import android.view.GestureDetector;
 import android.view.MotionEvent;
 import android.view.SurfaceHolder;
 import android.view.View;
@@ -13,7 +12,7 @@ import android.view.View;
  */
 public class TouchLabyrinthView extends AbstractLabyrinthView {
     private static final String LOG_TAG = TouchLabyrinthView.class.getName();
-    private GestureDetector gestureDetector;
+    private OnTouchListener touchListener;
 
     public TouchLabyrinthView(Context context) {
         super(context);
@@ -31,13 +30,21 @@ public class TouchLabyrinthView extends AbstractLabyrinthView {
     @Override
     public void surfaceCreated(SurfaceHolder holder) {
         super.surfaceCreated(holder);
-        setOnTouchListener(new OnTouchListener() {
+        touchListener = new OnTouchListener() {
             public boolean onTouch(View v, MotionEvent event) {
                 // ... Respond to touch events
                 Log.v(LOG_TAG,"onTouch() called");
                 fireTouchEvent(event);
                 return true;
             }
-        });
+        };
+        setOnTouchListener(touchListener);
+    }
+
+    @Override
+    public void surfaceDestroyed(SurfaceHolder holder) {
+        setOnTouchListener(null);
+        touchListener = null;
+        super.surfaceDestroyed(holder);
     }
 }
