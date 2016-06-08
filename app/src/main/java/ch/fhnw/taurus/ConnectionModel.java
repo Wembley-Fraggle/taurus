@@ -12,7 +12,7 @@ public class ConnectionModel extends  Observable implements Serializable {
 
     public ConnectionModel() {
         this.ip = "127.0.0.1";
-        this.port = 12202;
+        this.port = 12002;
     }
 
     public void setPort(int port) {
