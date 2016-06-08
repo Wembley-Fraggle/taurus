@@ -11,14 +11,14 @@
         android:layout_centerHorizontal="true"
         />
 
-    <ch.fhnw.taurus.LabyrinthView
+    <ch.fhnw.taurus.TouchLabyrinthView
         android:id="@+id/pitch_control"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_toLeftOf="@id/touch_control_anchor"
         />
 
-    <ch.fhnw.taurus.LabyrinthView
+    <ch.fhnw.taurus.TouchLabyrinthView
         android:id="@+id/roll_control"
         android:layout_width="match_parent"
         android:layout_height="match_parent"

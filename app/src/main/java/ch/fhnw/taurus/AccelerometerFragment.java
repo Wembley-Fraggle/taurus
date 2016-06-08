@@ -14,7 +14,7 @@ import android.view.ViewGroup;
  */
 public class AccelerometerFragment extends Fragment {
 
-    private LabyrinthView labyrinthView;
+    private TouchLabyrinthView labyrinthView;
 
     public AccelerometerFragment() {
         // Required empty public constructor
@@ -26,7 +26,7 @@ public class AccelerometerFragment extends Fragment {
                              Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_accelerometer, container, false);
 
-        labyrinthView = (LabyrinthView)view.findViewById(R.id.accelerometer_control);
+        labyrinthView = (TouchLabyrinthView)view.findViewById(R.id.accelerometer_control);
 
         // FIXME Make one converter, but pass the required parameters
         final PositionConverter angleConverter = new PositionConverter(getLabyrinth(),labyrinthView,labyrinthView.getMaxCursorRadius());

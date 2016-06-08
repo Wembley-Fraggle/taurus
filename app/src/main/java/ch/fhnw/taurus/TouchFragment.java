@@ -11,8 +11,8 @@ import android.view.ViewGroup;
 
 public class TouchFragment extends Fragment {
 
-    private LabyrinthView pitchView;
-    private LabyrinthView rollView;
+    private TouchLabyrinthView pitchView;
+    private TouchLabyrinthView rollView;
 
     @Nullable
     @Override
@@ -22,8 +22,8 @@ public class TouchFragment extends Fragment {
                 container,
                 false); //!!! this is important
 
-        pitchView = (LabyrinthView)view.findViewById(R.id.pitch_control);
-        rollView = (LabyrinthView)view.findViewById(R.id.roll_control);
+        pitchView = (TouchLabyrinthView)view.findViewById(R.id.pitch_control);
+        rollView = (TouchLabyrinthView)view.findViewById(R.id.roll_control);
 
         // FIXME Make one converter, but pass the required parameters
         final PositionConverter pitchConverter = new PositionConverter(getLabyrinth(),pitchView,pitchView.getMaxCursorRadius());

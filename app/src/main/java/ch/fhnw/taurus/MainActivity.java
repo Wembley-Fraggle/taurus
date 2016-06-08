@@ -11,7 +11,7 @@ import android.util.Log;
 public class MainActivity extends Activity {
 
     private static final String LOG_TAG = MainActivity.class.getName();
-    private LabyrinthView surfaceView;
+    private TouchLabyrinthView surfaceView;
     private AsyncTask connectionTask;
     private boolean connectionTested;  // FIXME Requried?
     private ConnectionModel connectionModel;

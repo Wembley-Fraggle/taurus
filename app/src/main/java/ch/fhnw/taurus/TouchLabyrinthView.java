@@ -10,18 +10,18 @@ import java.text.MessageFormat;
 /**
  * Created by nozdormu on 03/05/2016.
  */
-public class LabyrinthView extends AbstractLabyrinthView {
-    private static final String LOG_TAG = LabyrinthView.class.getName();
+public class TouchLabyrinthView extends AbstractLabyrinthView {
+    private static final String LOG_TAG = TouchLabyrinthView.class.getName();
 
-    public LabyrinthView(Context context) {
+    public TouchLabyrinthView(Context context) {
         super(context);
     }
 
-    public LabyrinthView(Context context, AttributeSet attrs) {
+    public TouchLabyrinthView(Context context, AttributeSet attrs) {
         super(context, attrs);
     }
 
-    public LabyrinthView(Context context, AttributeSet attrs, int defStyleAttr) {
+    public TouchLabyrinthView(Context context, AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr);
     }
 
