@@ -36,14 +36,6 @@ public class LabyrinthView extends AbstractLabyrinthView {
         init();
     }
 
-    public void addTouchEventListener(TouchEventListener listener) {
-        touchEventListenerList.add(listener);
-    }
-
-    public void removeTouchEventListener(TouchEventListener listener) {
-        touchEventListenerList.remove(listener);
-    }
-
     private void init() {
         touchEventListenerList = new LinkedList<>();
         touchEventListenerList.add(new TouchEventListener() {
