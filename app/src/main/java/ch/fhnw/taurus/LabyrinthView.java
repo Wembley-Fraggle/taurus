@@ -20,7 +20,6 @@ public class LabyrinthView extends AbstractLabyrinthView {
     private static final String LOG_TAG = LabyrinthView.class.getName();
     private LabyrinthDrawThread drawTask;
     private List<TouchEventListener> touchEventListenerList;
-    private DrawStrategy drawStrategy;
 
     public LabyrinthView(Context context) {
         super(context);
@@ -45,14 +44,6 @@ public class LabyrinthView extends AbstractLabyrinthView {
         touchEventListenerList.remove(listener);
     }
 
-    public DrawStrategy getDrawStrategy() {
-        return drawStrategy;
-    }
-
-    public void setDrawStrategy(DrawStrategy drawStrategy) {
-        this.drawStrategy = drawStrategy;
-    }
-
     private void init() {
         touchEventListenerList = new LinkedList<>();
         touchEventListenerList.add(new TouchEventListener() {
@@ -72,7 +63,7 @@ public class LabyrinthView extends AbstractLabyrinthView {
             drawTask = null;
         }
 
-        drawTask = new LabyrinthDrawThread(this,RADIUS, OUTER_RADIUS, drawStrategy);
+        drawTask = new LabyrinthDrawThread(this,RADIUS, OUTER_RADIUS, getDrawStrategy());
         drawTask.start();
 
 

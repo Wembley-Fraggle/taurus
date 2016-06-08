@@ -15,7 +15,6 @@ public abstract class AbstractLabyrinthView extends SurfaceView implements Surfa
     protected static final float RADIUS=30;
     protected static final float OUTER_RADIUS = RADIUS + 10;
 
-
     public AbstractLabyrinthView(Context context) {
         super(context);
     }
@@ -26,6 +25,14 @@ public abstract class AbstractLabyrinthView extends SurfaceView implements Surfa
 
     public AbstractLabyrinthView(Context context, AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr);
+    }
+
+    public DrawStrategy getDrawStrategy() {
+        return drawStrategy;
+    }
+
+    public void setDrawStrategy(DrawStrategy drawStrategy) {
+        this.drawStrategy = drawStrategy;
     }
 
     @Override
