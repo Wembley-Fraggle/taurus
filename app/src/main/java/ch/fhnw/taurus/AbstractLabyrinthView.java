@@ -27,14 +27,17 @@ public abstract class AbstractLabyrinthView extends SurfaceView implements Surfa
 
     public AbstractLabyrinthView(Context context) {
         super(context);
+        init();
     }
 
     public AbstractLabyrinthView(Context context, AttributeSet attrs) {
         super(context, attrs);
+        init();
     }
 
     public AbstractLabyrinthView(Context context, AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr);
+        init();
     }
 
     public DrawStrategy getDrawStrategy() {
