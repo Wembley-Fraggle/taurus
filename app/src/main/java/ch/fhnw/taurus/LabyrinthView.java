@@ -83,10 +83,6 @@ public class LabyrinthView extends AbstractLabyrinthView {
         }
     }
 
-    public float getMaxCursorRadius() {
-        return OUTER_RADIUS;
-    }
-
     @Override
     public boolean onTouchEvent(MotionEvent event) {
         Log.v(LOG_TAG,"onTouchEvent() called");

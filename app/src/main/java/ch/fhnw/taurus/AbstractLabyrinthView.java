@@ -35,6 +35,10 @@ public abstract class AbstractLabyrinthView extends SurfaceView implements Surfa
         this.drawStrategy = drawStrategy;
     }
 
+    public float getMaxCursorRadius() {
+        return OUTER_RADIUS;
+    }
+
     @Override
     protected void onAttachedToWindow() {
         Log.v(LOG_TAG,"onAttachedToWindow() called");
