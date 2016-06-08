@@ -75,7 +75,7 @@ public class MainActivity extends Activity {
         connectionTask = new ServerConnectionTask();
         connectionTask.execute(connectionModel);
         try {
-            OscClient oscClient  = connectionTask.get(10, TimeUnit.SECONDS);
+            OscClient oscClient  = connectionTask.get(15, TimeUnit.SECONDS);
             Log.w(LOG_TAG, "Connection possible");
             new OscThread(oscClient, new ThreadInitCallback() {
                 @Override
@@ -88,6 +88,7 @@ public class MainActivity extends Activity {
             connectionTested = true;
         }
         catch(Exception ex) {
+            connectionTask.cancel(true);
             Log.w(LOG_TAG, "Failed to connect");
             setResult(Contract.RESULT_CONNECTION_FAILED);
             finish();
