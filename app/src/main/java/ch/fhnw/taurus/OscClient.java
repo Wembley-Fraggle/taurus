@@ -47,7 +47,7 @@ public class OscClient {
         oscMessage.add(1);
         oscMessage.add(angleY);
 
-        Log.d(LOG_TAG, MessageFormat.format("Updating osc angles [{0}/{1}",angleX,angleY));
+        Log.d(LOG_TAG, MessageFormat.format("Updating osc angles [{0}/{1}]",angleX,angleY));
         oscP5.send(oscMessage);
     }
 }
