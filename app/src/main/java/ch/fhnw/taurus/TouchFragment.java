@@ -27,7 +27,7 @@ public class TouchFragment extends Fragment {
 
         // FIXME Make one converter, but pass the required parameters
         final PositionConverter pitchConverter = new PositionConverter(getLabyrinth(),pitchView,pitchView.getMaxCursorRadius());
-        final PositionConverter rollConverter = new PositionConverter(getLabyrinth(),pitchView,pitchView.getMaxCursorRadius());
+        final PositionConverter rollConverter = new PositionConverter(getLabyrinth(),rollView,rollView.getMaxCursorRadius());
 
         pitchView.addTouchEventListener(new TouchEventListener() {
             @Override
