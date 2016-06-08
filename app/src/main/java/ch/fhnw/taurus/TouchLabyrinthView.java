@@ -26,19 +26,25 @@ public class TouchLabyrinthView extends AbstractLabyrinthView {
         super(context, attrs, defStyleAttr);
     }
 
-
     @Override
     public void surfaceCreated(SurfaceHolder holder) {
-        super.surfaceCreated(holder);
         touchListener = new OnTouchListener() {
             public boolean onTouch(View v, MotionEvent event) {
                 // ... Respond to touch events
                 Log.v(LOG_TAG,"onTouch() called");
-                fireTouchEvent(event);
+
+                // Ensure that the cursor is always displayed within the draw berders
+                float x = Math.max(OUTER_RADIUS,Math.min(getWidth()-OUTER_RADIUS,event.getX()));
+                float y = Math.max(OUTER_RADIUS,Math.min(getHeight()-OUTER_RADIUS,event.getY()));
+
+                sendPosToDrawTask(x,y);
+                firePositionChanged(x, y);
                 return true;
             }
         };
+
         setOnTouchListener(touchListener);
+        super.surfaceCreated(holder);
     }
 
     @Override

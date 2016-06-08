@@ -6,7 +6,6 @@ import android.os.Handler;
 import android.os.Message;
 import android.util.AttributeSet;
 import android.util.Log;
-import android.view.MotionEvent;
 import android.view.SurfaceHolder;
 import android.view.SurfaceView;
 
@@ -20,7 +19,7 @@ public abstract class AbstractLabyrinthView extends SurfaceView implements Surfa
     private static final String LOG_TAG = AbstractLabyrinthView.class.getName();
     private LabyrinthDrawThread drawTask;
     private DrawStrategy drawStrategy;
-    private List<TouchEventListener> touchEventListenerList;
+    private List<PositionChangedListener> angleChangedListeners;
     private Handler drawHandler;
     protected static final float RADIUS=30;
     protected static final float OUTER_RADIUS = RADIUS + 10;
@@ -53,13 +52,12 @@ public abstract class AbstractLabyrinthView extends SurfaceView implements Surfa
         return OUTER_RADIUS;
     }
 
-
-    public void addTouchEventListener(TouchEventListener listener) {
-        touchEventListenerList.add(listener);
+    public void addTouchEventListener(PositionChangedListener listener) {
+        angleChangedListeners.add(listener);
     }
 
-    public void removeTouchEventListener(TouchEventListener listener) {
-        touchEventListenerList.remove(listener);
+    public void removeTouchEventListener(PositionChangedListener listener) {
+        angleChangedListeners.remove(listener);
     }
 
     @Override
@@ -101,23 +99,15 @@ public abstract class AbstractLabyrinthView extends SurfaceView implements Surfa
         super.onAttachedToWindow();
     }
 
-    protected void fireTouchEvent(MotionEvent event) {
-        List<TouchEventListener> localListeners = new LinkedList<>(touchEventListenerList);
-        for(TouchEventListener listener : localListeners) {
-
-            // Ensure that the cursor is always displayed within the draw berders
-            float x = Math.max(OUTER_RADIUS,Math.min(getWidth()-OUTER_RADIUS,event.getX()));
-            float y = Math.max(OUTER_RADIUS,Math.min(getHeight()-OUTER_RADIUS,event.getY()));
-            if(x != event.getX() || y != event.getY()) {
-                event.setLocation(x,y);
-            }
-
-            listener.onTouchEvent(event);
+    protected void firePositionChanged(float x, float y) {
+        List<PositionChangedListener> localListeners = new LinkedList<>(angleChangedListeners);
+        for(PositionChangedListener listener : localListeners) {
+            listener.onPositionChanged(x,y);
         }
     }
 
 
-    private void sendPosToDrawTask(float x, float y) {
+    protected void sendPosToDrawTask(float x, float y) {
         if(drawTask != null && drawTask.isAlive() && drawHandler != null) {
             Message msg = drawHandler.obtainMessage();
             msg.what = LabyrinthDrawThread.WHAT_SET_POS;
@@ -137,19 +127,11 @@ public abstract class AbstractLabyrinthView extends SurfaceView implements Surfa
     }
 
     private void init() {
-
-        touchEventListenerList = new LinkedList<>();
-        touchEventListenerList.add(new TouchEventListener() {
-            @Override
-            public void onTouchEvent(MotionEvent event) {
-                // Draw Positions in another thread
-                sendPosToDrawTask(event.getX(),event.getY());
-            }
-        });
+        angleChangedListeners = new LinkedList<>();
     }
 
 
-    private Labyrinth getLabyrinth() {
+    protected Labyrinth getLabyrinth() {
         return getApp().getLabyrinth();
     }
 

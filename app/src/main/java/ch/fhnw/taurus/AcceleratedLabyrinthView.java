@@ -6,16 +6,21 @@ import android.hardware.SensorEvent;
 import android.hardware.SensorEventListener;
 import android.hardware.SensorManager;
 import android.util.AttributeSet;
+import android.util.Log;
 import android.view.SurfaceHolder;
+
+import java.text.MessageFormat;
 
 /**
  * Created by nozdormu on 08/06/2016.
  */
 public class AcceleratedLabyrinthView extends  AbstractLabyrinthView {
 
+    private static final float G = 9.81f;
     private static final String LOG_TAG = AcceleratedLabyrinthView.class.getName();
     private static final int SAMPLING_PERIOD = 10;
     private SensorEventListener sensorEventListener;
+
 
     public AcceleratedLabyrinthView(Context context) {
         super(context);
@@ -31,30 +36,57 @@ public class AcceleratedLabyrinthView extends  AbstractLabyrinthView {
 
     @Override
     public void surfaceCreated(SurfaceHolder holder) {
+
         super.surfaceCreated(holder);
-        SensorManager manager = (SensorManager)getContext().getSystemService(Context.SENSOR_SERVICE);
+        SensorManager manager = (SensorManager) getContext().getSystemService(Context.SENSOR_SERVICE);
         Sensor sensor = manager.getDefaultSensor(Sensor.TYPE_ACCELEROMETER);
         sensorEventListener = new SensorEventListener() {
             @Override
             public void onSensorChanged(SensorEvent event) {
+                float gX = normalizeGravity(event.values[0]);
+                float gY = normalizeGravity(event.values[1]);
 
+                float x = convertGravityXToPosition(gX);
+                float y = convertGravityYToPosition(gY);
+
+                sendPosToDrawTask(x,y);
+                firePositionChanged(x,y);
+
+                Log.v(LOG_TAG, MessageFormat.format("onSensorChanged() called [{0}/{1}]", x, y));
             }
 
             @Override
             public void onAccuracyChanged(Sensor sensor, int accuracy) {
-
+                // ignore it
             }
         };
 
-        manager.registerListener(sensorEventListener,sensor,SAMPLING_PERIOD);
+        manager.registerListener(sensorEventListener, sensor, SAMPLING_PERIOD);
 
     }
 
     @Override
     public void surfaceDestroyed(SurfaceHolder holder) {
-        SensorManager manager = (SensorManager)getContext().getSystemService(Context.SENSOR_SERVICE);
+        SensorManager manager = (SensorManager) getContext().getSystemService(Context.SENSOR_SERVICE);
         manager.unregisterListener(sensorEventListener);
         sensorEventListener = null;
         super.surfaceDestroyed(holder);
     }
+
+    private float normalizeGravity(float g) {
+        return Math.max(G, Math.min(-G, g));
+    }
+
+    private float convertGravityXToPosition(float g) {
+        return convertGravityToPosition(g, getWidth());
+    }
+
+    private float convertGravityYToPosition(float g) {
+        return convertGravityToPosition(g, getHeight());
+    }
+
+    private float convertGravityToPosition(float g,float displaySize ) {
+        return (g+G)/(2*G)*(displaySize-2*OUTER_RADIUS)+OUTER_RADIUS;
+    }
 }
+

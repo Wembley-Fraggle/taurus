@@ -5,12 +5,12 @@ import android.view.View;
 /**
  * Created by nozdormu on 12/05/2016.
  */
-public class PositionConverter {
+public class TouchAngleConverter {
     private View view;
     private Labyrinth labyrinth;
     private float cursorRadius;
 
-    public PositionConverter(Labyrinth labyrinth, View view, float cursorRadius) {
+    public TouchAngleConverter(Labyrinth labyrinth, View view, float cursorRadius) {
         this.labyrinth = labyrinth;
         this.view = view;
         this.cursorRadius = cursorRadius;
