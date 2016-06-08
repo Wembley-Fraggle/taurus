@@ -21,6 +21,7 @@ public class LabyrinthDrawThread extends HandlerThread{
     private final float outerRadius;
     private final DrawStrategy drawStrategy;
     private Handler handler;
+    private ThreadInitCallback threadInitCallback;
 
     public static final int WHAT_STOP = 0;
     public static final int WHAT_SET_POS = 1;
@@ -28,7 +29,7 @@ public class LabyrinthDrawThread extends HandlerThread{
 
     // FIXME Wait until initialized, use the callback
 
-    public LabyrinthDrawThread(SurfaceView view, float innerRadius, float outerRadius, DrawStrategy drawStrategy) {
+    public LabyrinthDrawThread(SurfaceView view, float innerRadius, float outerRadius, DrawStrategy drawStrategy, ThreadInitCallback callback) {
         super(LabyrinthDrawThread.class.getSimpleName(), Process.THREAD_PRIORITY_BACKGROUND);
         if(view == null) {
             throw new IllegalArgumentException("View must not be null");
@@ -37,15 +38,13 @@ public class LabyrinthDrawThread extends HandlerThread{
         this.innerRadius= innerRadius;
         this.outerRadius=  Math.max(innerRadius,outerRadius);
         this.drawStrategy = drawStrategy;
+        this.threadInitCallback = callback;
     }
 
     @Override
     protected void onLooperPrepared() {
         handler = createDispatcher();
-    }
-
-    public Handler getHandler() {
-        return handler;
+        threadInitCallback.onHandlerInitialized(handler);
     }
 
     private Handler createDispatcher() {

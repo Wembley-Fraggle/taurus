@@ -21,6 +21,7 @@ public abstract class AbstractLabyrinthView extends SurfaceView implements Surfa
     private LabyrinthDrawThread drawTask;
     private DrawStrategy drawStrategy;
     private List<TouchEventListener> touchEventListenerList;
+    private Handler drawHandler;
     protected static final float RADIUS=30;
     protected static final float OUTER_RADIUS = RADIUS + 10;
 
@@ -69,7 +70,12 @@ public abstract class AbstractLabyrinthView extends SurfaceView implements Surfa
             drawTask = null;
         }
 
-        drawTask = new LabyrinthDrawThread(this,RADIUS, OUTER_RADIUS, getDrawStrategy());
+        drawTask = new LabyrinthDrawThread(this, RADIUS, OUTER_RADIUS, getDrawStrategy(), new ThreadInitCallback() {
+            @Override
+            public void onHandlerInitialized(Handler handler) {
+                drawHandler = handler;
+            }
+        });
         drawTask.start();
     }
 
@@ -112,9 +118,8 @@ public abstract class AbstractLabyrinthView extends SurfaceView implements Surfa
 
 
     private void sendPosToDrawTask(float x, float y) {
-        if(drawTask != null && drawTask.isAlive()) {
-            Handler handler = drawTask.getHandler();
-            Message msg = handler.obtainMessage();
+        if(drawTask != null && drawTask.isAlive() && drawHandler != null) {
+            Message msg = drawHandler.obtainMessage();
             msg.what = LabyrinthDrawThread.WHAT_SET_POS;
             Bundle bundle = msg.getData();
             bundle.putFloat("x",x);
@@ -124,15 +129,15 @@ public abstract class AbstractLabyrinthView extends SurfaceView implements Surfa
     }
 
     private void stopCurrentTask() {
-        if(drawTask != null && drawTask.isAlive()) {
-            Handler handler = drawTask.getHandler();
-            Message msg = handler.obtainMessage();
+        if(drawTask != null && drawTask.isAlive() && drawHandler != null) {
+            Message msg = drawHandler.obtainMessage();
             msg.what = LabyrinthDrawThread.WHAT_STOP;
             msg.sendToTarget();
         }
     }
 
     private void init() {
+
         touchEventListenerList = new LinkedList<>();
         touchEventListenerList.add(new TouchEventListener() {
             @Override
