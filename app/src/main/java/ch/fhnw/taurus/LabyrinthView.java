@@ -68,13 +68,6 @@ public class LabyrinthView extends SurfaceView implements SurfaceHolder.Callback
     }
 
     @Override
-    protected void onAttachedToWindow() {
-        Log.v(LOG_TAG,"onAttachedToWindow() called");
-        getHolder().addCallback(this);
-        super.onAttachedToWindow();
-    }
-
-    @Override
     public void surfaceCreated(SurfaceHolder holder) {
         Log.v(LOG_TAG,"surfaceCreated() called");
         if(drawTask != null) {
