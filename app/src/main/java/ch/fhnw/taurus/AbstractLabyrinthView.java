@@ -12,6 +12,9 @@ import android.view.SurfaceView;
 public abstract class AbstractLabyrinthView extends SurfaceView implements SurfaceHolder.Callback{
     private static final String LOG_TAG = AbstractLabyrinthView.class.getName();
     private DrawStrategy drawStrategy;
+    protected static final float RADIUS=30;
+    protected static final float OUTER_RADIUS = RADIUS + 10;
+
 
     public AbstractLabyrinthView(Context context) {
         super(context);

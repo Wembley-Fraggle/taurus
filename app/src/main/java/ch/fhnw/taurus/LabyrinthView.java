@@ -19,8 +19,6 @@ import java.util.List;
 public class LabyrinthView extends AbstractLabyrinthView {
     private static final String LOG_TAG = LabyrinthView.class.getName();
     private LabyrinthDrawThread drawTask;
-    private static final float RADIUS=30;
-    public static final float OUTER_RADIUS = RADIUS + 10;
     private List<TouchEventListener> touchEventListenerList;
     private DrawStrategy drawStrategy;
 
