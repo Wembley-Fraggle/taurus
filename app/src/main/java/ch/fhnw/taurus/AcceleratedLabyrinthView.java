@@ -6,10 +6,7 @@ import android.hardware.SensorEvent;
 import android.hardware.SensorEventListener;
 import android.hardware.SensorManager;
 import android.util.AttributeSet;
-import android.util.Log;
 import android.view.SurfaceHolder;
-
-import java.text.MessageFormat;
 
 /**
  * Created by nozdormu on 08/06/2016.
@@ -53,7 +50,6 @@ public class AcceleratedLabyrinthView extends  AbstractLabyrinthView {
                 sendPosToDrawTask(x,y);
                 firePositionChanged(x,y);
 
-                Log.v(LOG_TAG, MessageFormat.format("onSensorChanged() called [{0}/{1}]", x,y));
             }
 
             @Override
@@ -62,7 +58,7 @@ public class AcceleratedLabyrinthView extends  AbstractLabyrinthView {
             }
         };
 
-        manager.registerListener(sensorEventListener, sensor,SensorManager.SENSOR_DELAY_GAME);
+        manager.registerListener(sensorEventListener, sensor,SensorManager.SENSOR_DELAY_UI);
 
     }
 
