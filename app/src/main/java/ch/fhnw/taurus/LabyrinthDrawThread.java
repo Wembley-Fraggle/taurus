@@ -26,9 +26,6 @@ public class LabyrinthDrawThread extends HandlerThread{
     public static final int WHAT_STOP = 0;
     public static final int WHAT_SET_POS = 1;
 
-
-    // FIXME Wait until initialized, use the callback
-
     public LabyrinthDrawThread(SurfaceView view, float innerRadius, float outerRadius, DrawStrategy drawStrategy, ThreadInitCallback callback) {
         super(LabyrinthDrawThread.class.getSimpleName(), Process.THREAD_PRIORITY_BACKGROUND);
         if(view == null) {
@@ -45,6 +42,14 @@ public class LabyrinthDrawThread extends HandlerThread{
     protected void onLooperPrepared() {
         handler = createDispatcher();
         threadInitCallback.onHandlerInitialized(handler);
+        draw(new DrawCallback() {
+
+            @Override
+            public void draw(Canvas canvas) {
+                canvas.drawColor(Color.TRANSPARENT, PorterDuff.Mode.CLEAR);
+                drawStrategy.drawBackground(canvas);
+            }
+        });
     }
 
     private Handler createDispatcher() {
@@ -68,15 +73,26 @@ public class LabyrinthDrawThread extends HandlerThread{
 
     private void doSetPos(Message msg) {
         Bundle bundle = msg.getData();
-        float posX =  bundle.getFloat("x");
-        float posY = bundle.getFloat("y");
+        final float posX =  bundle.getFloat("x");
+        final float posY = bundle.getFloat("y");
 
-        draw(posX,posY);
+        draw(new DrawCallback() {
 
+            @Override
+            public void draw(Canvas canvas) {
+                canvas.drawColor(Color.TRANSPARENT, PorterDuff.Mode.CLEAR);
+                drawStrategy.drawBackground(canvas);
+                drawStrategy.drawCursor(canvas,posX,posY);
+            }
+        });
 
     }
 
-    private void draw(float x, float y) {
+    interface DrawCallback {
+        void draw(Canvas canvas);
+    }
+
+    private void draw(DrawCallback drawCallback) {
 
         final SurfaceHolder surfaceHolder = view.getHolder();
         Canvas canvas = null;
@@ -84,9 +100,7 @@ public class LabyrinthDrawThread extends HandlerThread{
             canvas = surfaceHolder.lockCanvas();
             synchronized (surfaceHolder) {
                 if(canvas != null && drawStrategy != null) {
-                    canvas.drawColor(Color.TRANSPARENT, PorterDuff.Mode.CLEAR);
-                    drawStrategy.drawBackground(canvas);
-                    drawStrategy.drawCursor(canvas,x,y);
+                    drawCallback.draw(canvas);
                 }
             }
         } finally {
