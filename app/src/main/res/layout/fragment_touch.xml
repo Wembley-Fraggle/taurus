@@ -12,14 +12,14 @@
         />
 
     <ch.fhnw.taurus.TouchLabyrinthView
-        android:id="@+id/pitch_control"
+        android:id="@+id/roll_control"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_toLeftOf="@id/touch_control_anchor"
         />
 
     <ch.fhnw.taurus.TouchLabyrinthView
-        android:id="@+id/roll_control"
+        android:id="@+id/pitch_control"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_toRightOf="@id/touch_control_anchor"

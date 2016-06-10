@@ -54,10 +54,10 @@ public class OscThread extends HandlerThread {
         }
 
         Bundle bundle = msg.getData();
-        int x = bundle.getInt("x");
-        int y = bundle.getInt("y");
+        int pitch = bundle.getInt("pitch");
+        int roll = bundle.getInt("roll");
 
-        oscClient.sendMessage(x,y);
+        oscClient.sendMessage(roll,pitch);
 
     }
 

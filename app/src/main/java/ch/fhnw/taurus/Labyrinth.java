@@ -21,7 +21,7 @@ public final class Labyrinth extends Observable {
         roll = maxRoll / 2;
     }
 
-    public  void setAngles(int pitch, int roll) {
+    public  void setAngles(int roll,int pitch) {
         synchronized (lock) {
             validatePitch(pitch);
             validateRoll(roll);

@@ -27,15 +27,14 @@ public class AccelerometerFragment extends Fragment {
 
         labyrinthView = (AbstractLabyrinthView)view.findViewById(R.id.accelerometer_control);
 
-        // FIXME Make one converter, but pass the required parameters
         final TouchAngleConverter angleConverter = new TouchAngleConverter(getLabyrinth(),labyrinthView,labyrinthView.getMaxCursorRadius());
 
         labyrinthView.addTouchEventListener(new PositionChangedListener() {
             @Override
             public void onPositionChanged(float x, float y) {
-                int pitch = angleConverter.convertToXAngle(x);
-                int roll = angleConverter.convertToYAngle(y);
-                getLabyrinth().setAngles(pitch,roll);
+                int roll = angleConverter.convertToXAngle(x);
+                int pitch = angleConverter.convertToYAngle(y);
+                getLabyrinth().setAngles(roll,pitch);
             }
         });
 

@@ -32,31 +32,31 @@ public class TouchFragment extends Fragment {
 
     private void initTouchView(View view) {
 
-        pitchView = (AbstractLabyrinthView)view.findViewById(R.id.pitch_control);
+
         rollView = (AbstractLabyrinthView)getView().findViewById(R.id.roll_control);
+        pitchView = (AbstractLabyrinthView)view.findViewById(R.id.pitch_control);
 
-        final TouchAngleConverter pitchConverter = new TouchAngleConverter(getLabyrinth(),pitchView,pitchView.getMaxCursorRadius());
         final TouchAngleConverter rollConverter = new TouchAngleConverter(getLabyrinth(),rollView,rollView.getMaxCursorRadius());
-
-
-        pitchView.addTouchEventListener(new PositionChangedListener() {
-            @Override
-            public void onPositionChanged(float x, float y) {
-                int pitch = pitchConverter.convertToXAngle(x);
-                getLabyrinth().setPitch(pitch);
-            }
-        });
+        final TouchAngleConverter pitchConverter = new TouchAngleConverter(getLabyrinth(),pitchView,pitchView.getMaxCursorRadius());
 
         rollView.addTouchEventListener(new PositionChangedListener() {
             @Override
             public void onPositionChanged(float x, float y) {
-                int roll = rollConverter.convertToYAngle(y);
+                int roll = rollConverter.convertToXAngle(x);
                 getLabyrinth().setRoll(roll);
             }
         });
 
-        pitchView.setDrawStrategy(new HorizontalTouchDrawStrategy());
-        rollView.setDrawStrategy(new VerticalTouchDrawStrategy());
+        pitchView.addTouchEventListener(new PositionChangedListener() {
+            @Override
+            public void onPositionChanged(float x, float y) {
+                int pitch = pitchConverter.convertToYAngle(y);
+                getLabyrinth().setPitch(pitch);
+            }
+        });
+
+        rollView.setDrawStrategy(new HorizontalTouchDrawStrategy());
+        pitchView.setDrawStrategy(new VerticalTouchDrawStrategy());
     }
 
 
