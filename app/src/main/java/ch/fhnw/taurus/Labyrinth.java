@@ -61,13 +61,13 @@ public final class Labyrinth extends Observable {
 
     public int getPitch() {
         synchronized (lock) {
-            return roll;
+            return pitch;
         }
     }
 
     public int getRoll() {
         synchronized (lock) {
-            return pitch;
+            return roll;
         }
     }
 
