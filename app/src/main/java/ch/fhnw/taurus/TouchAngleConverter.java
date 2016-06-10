@@ -16,18 +16,17 @@ public class TouchAngleConverter {
         this.cursorRadius = cursorRadius;
     }
 
-    // FIXME Pitch and Roll
     public int convertToXAngle(float displayXPos) {
-        return convertToAngle(displayXPos,view.getWidth(),labyrinth.getMaxPitch());
+        return convertToAngle(displayXPos,view.getWidth(),labyrinth.getMaxRoll());
     }
 
     public int convertToYAngle(float displayXPos) {
-        return convertToAngle(displayXPos,view.getHeight(),labyrinth.getMaxRoll());
+        return convertToAngle(displayXPos,view.getHeight(),labyrinth.getMaxPitch());
     }
 
     private int convertToAngle(float displayPos, float displayLen,int maxAngle) {
         float len = displayLen-2*cursorRadius;
-        float pos = displayPos - 2*cursorRadius;
+        float pos = displayPos - cursorRadius;
         pos = Math.max(0,pos);
 
         // The canvas size - the radius padding
