@@ -4,7 +4,6 @@ import android.util.Log;
 
 import java.text.MessageFormat;
 
-import netP5.NetAddress;
 import oscP5.OscMessage;
 import oscP5.OscP5;
 import oscP5.OscProperties;
@@ -17,7 +16,6 @@ public class OscClient {
     private static final String LOG_TAG = OscClient.class.getName();
     private OscP5 oscP5;
     private ConnectionModel model;
-    private NetAddress remote;
 
     public OscClient(ConnectionModel model) {
         this.model = model;
@@ -36,18 +34,18 @@ public class OscClient {
         oscP5.stop();
     }
 
-    void sendMessage(int angleX, int angleY) {
+    void sendMessage(int roll,int pitch) {
         if(oscP5 == null) {
             throw new IllegalStateException("Not connected yet");
         }
 
         OscMessage oscMessage = new OscMessage("/lab");
         oscMessage.add(0);
-        oscMessage.add(angleX);
+        oscMessage.add(roll);
         oscMessage.add(1);
-        oscMessage.add(angleY);
+        oscMessage.add(pitch);
 
-        Log.d(LOG_TAG, MessageFormat.format("Updating osc angles [{0}/{1}]",angleX,angleY));
+        Log.d(LOG_TAG, MessageFormat.format("Updating osc angles [{0}/{1}]",roll,pitch));
         oscP5.send(oscMessage);
     }
 }
